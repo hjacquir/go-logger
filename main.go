@@ -45,12 +45,6 @@ type Logger struct {
  handlers []Handler
 }
 
-func (logger *Logger) addHandler(handler Handler) []Handler  {
- handlers := append(logger.handlers, handler)
-
- return handlers
-}
-
 func (logger *Logger) log(message string, context build.Context)  {
  var formattedMessage = logger.formatter.format(message, context)
 
@@ -63,14 +57,15 @@ func (logger *Logger) log(message string, context build.Context)  {
 
 // use case
 func main() {
- //var amqpFormatter LineFormatter
+ //var lineFormatter LineFormatter
  var jsonFormatter JsonFormatter
- var logger Logger = Logger{
+ var consoleHandler = ConsoleHandler{}
+ var handlers = []Handler{consoleHandler}
+
+ var logger = Logger{
   jsonFormatter,
-  []Handler{},
+  handlers,
  }
- var consoleHandler ConsoleHandler = ConsoleHandler{}
- logger.handlers = logger.addHandler(consoleHandler)
 
  logger.log("Hello World !", build.Context{})
 }
